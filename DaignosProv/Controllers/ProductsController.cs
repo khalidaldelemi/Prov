@@ -72,6 +72,7 @@ namespace DaignosProv.Controllers
                        Name= product.Name,
                         Price = product.Price,
                     };
+                    //xnncx,
                     _context.Products.Add(products);
                 }
                 _context.Products.Add(product);
