@@ -13,7 +13,7 @@ namespace DaignosProv.Models
         [Required]
         public string Name { get; set; }
         [Range (typeof(decimal),"5","1000")]
-        public decimal Priice { get; set; }
+        public decimal Price { get; set; }
         public ProductCategory category { get; set; }
         public int CategoryId { get; set; }
 

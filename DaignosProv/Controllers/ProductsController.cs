@@ -22,7 +22,7 @@ namespace DaignosProv.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            return View(await _context.Categories.Include(c=>c.Products).ToListAsync());
         }
 
         // GET: Products/Details/5
@@ -46,7 +46,9 @@ namespace DaignosProv.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
+            ViewData["CatList"] = new SelectList(_context.Categories, "CategoryId", "Name");
             return View();
+            
         }
 
         // POST: Products/Create
@@ -54,7 +56,7 @@ namespace DaignosProv.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,Name,Priice")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,Name,Price,CategoryId")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -78,6 +80,7 @@ namespace DaignosProv.Controllers
             {
                 return NotFound();
             }
+            ViewData["Catlist"] = new SelectList(_context.Categories, "CategoryId", "Name", dish.CategoryId);
             return View(product);
         }
 
@@ -86,7 +89,7 @@ namespace DaignosProv.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Name,Priice")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Name,Price")] Product product)
         {
             if (id != product.ProductId)
             {
