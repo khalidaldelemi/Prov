@@ -80,7 +80,7 @@ namespace DaignosProv.Controllers
             {
                 return NotFound();
             }
-            ViewData["Catlist"] = new SelectList(_context.Categories, "CategoryId", "Name", dish.CategoryId);
+            ViewData["Catlist"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
             return View(product);
         }
 
