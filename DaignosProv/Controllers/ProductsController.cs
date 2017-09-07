@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DaignosProv.Data;
 using DaignosProv.Models;
 using DaignosProv.Services;
+using Microsoft.Extensions.Logging;
 
 namespace DaignosProv.Controllers
 {
@@ -15,17 +16,21 @@ namespace DaignosProv.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly CategoryService _category;
+        private readonly ILogger _logger;
 
-        public ProductsController(ApplicationDbContext context,CategoryService category)
+        public ProductsController(ApplicationDbContext context,CategoryService category,ILogger<ProductsController> logger)
         {
             _context = context;
             _category = category;
+            _logger = logger;
+
         }
 
         // GET: Products
         public async Task<IActionResult> Index()
         {
             var product = await _context.Categories.Include(p => p.Products).ToListAsync();
+            _logger.LogWarning("With great powers comes great responsibilities");
             return View(product);
         }
 
