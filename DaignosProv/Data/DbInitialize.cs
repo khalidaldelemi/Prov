@@ -10,14 +10,15 @@ namespace DaignosProv.Data
     {
         public static void Initilaize(ApplicationDbContext context)
         {
-            if (!context.Products.Any())
-            {
                 var TV = new ProductCategory { Name = "Tv" };
                 var DVD = new ProductCategory { Name = "Dvd" };
                 var VHS = new ProductCategory { Name = "Vhs" };
-                context.AddRange(TV, DVD, VHS);
+            context.Categories.Add(TV);
+            context.Add(DVD);
+            context.Add(VHS);
+                
                 context.SaveChanges();
-            }
+            
         }
     }
 }

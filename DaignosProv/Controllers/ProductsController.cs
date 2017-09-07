@@ -7,22 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DaignosProv.Data;
 using DaignosProv.Models;
+using DaignosProv.Services;
 
 namespace DaignosProv.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly CategoryService _category;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context,CategoryService category)
         {
             _context = context;
+            _category = category;
         }
 
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.Include(c=>c.Products).ToListAsync());
+            var product = await _context.Categories.Include(p => p.Products).ToListAsync();
+            return View(product);
         }
 
         // GET: Products/Details/5
@@ -46,21 +50,31 @@ namespace DaignosProv.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["CatList"] = new SelectList(_context.Categories, "CategoryId", "Name");
+            ViewData["CatList"] = new SelectList(_context.Categories, "ProductCategoryId", "Name");
             return View();
             
         }
 
         // POST: Products/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // more details see 0http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,Name,Price,CategoryId")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,Name,Price,ProductCategoryId")] Product product)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
+                foreach (var cat in _category.GetSelectList())
+                {
+                    var products = new Product
+                    {
+                        ProductCategoryId = cat.ProductCategoryId,
+                       Name= product.Name,
+                        Price = product.Price,
+                    };
+                    _context.Products.Add(products);
+                }
+                _context.Products.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -80,7 +94,7 @@ namespace DaignosProv.Controllers
             {
                 return NotFound();
             }
-            ViewData["Catlist"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
+            ViewData["Catlist"] = new SelectList(_context.Categories, "ProductCategoryId", "Name", product.ProductCategoryId);
             return View(product);
         }
 
@@ -100,6 +114,17 @@ namespace DaignosProv.Controllers
             {
                 try
                 {
+                    foreach (var cat in _category.GetSelectList())
+                    {
+                        var newproduct = new Product
+                        {
+                            ProductId=product.ProductId,
+                            ProductCategoryId = cat.ProductCategoryId,
+                            Name = product.Name,
+                            Price = product.Price,
+                        };
+                        _context.Update(newproduct);
+                    }
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }

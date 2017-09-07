@@ -15,7 +15,7 @@ namespace DaignosProv.Models
         [Range (typeof(decimal),"5","1000")]
         public decimal Price { get; set; }
         public ProductCategory category { get; set; }
-        public int CategoryId { get; set; }
+        public int ProductCategoryId { get; set; }
 
 
     }

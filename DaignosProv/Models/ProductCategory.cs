@@ -7,7 +7,8 @@ namespace DaignosProv.Models
 {
     public class ProductCategory
     {
-        public int CategoryId { get; set; }
+        public int ProductCategoryId { get; set; }
+
         public string Name { get; set; }
         public List<Product> Products { get; set; }
 
